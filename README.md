@@ -1,1 +1,2 @@
-# sudoku-solver
+# Sudoku Solver using Backtracking Algorithm and Inference Method
+
