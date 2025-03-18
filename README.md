@@ -8,3 +8,8 @@ The rules of the game are:
 requires that the value in one cell is exactly double the value of the other cell. This also could be satisfied in either direction; e.g., “3 & 6” or “6 & 3.” If there is no dot between two adjacent cells, then neither condition needs to be fulfilled between the two cells.
 
 ![img](/img/puzzle-solution.png)
+
+### Implementation result as follow:
+
+![img](/img/input.png)
+![img](/img/output.png)
