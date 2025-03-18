@@ -1,4 +1,4 @@
-# Kropki Sudok Solver using Backtracking and Forward Checking
+# Kropki Sudoku Solver using Backtracking and Forward Checking
 
 Implement the Backtracking Algorithm to solve the Kropki Sudoku puzzle.
 The rules of the game are:
