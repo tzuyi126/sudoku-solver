@@ -1,31 +1,41 @@
+import os
 import sys
 import time
 
+
 class CSP:
+
     def __init__(self, rows, cols):
         self.rows = rows
         self.cols = cols
+
 
     def solve(self, input_file, output_file):
         board = self.read_file(input_file)
         self.set_variables(board)
         self.set_constraints()
         self.set_domain(board)
+        
+        self.log_solution(board) # Unsolved
+        input("\nPress ENTER to start solving...")
 
         # Start a timer
         start = time.time()
 
         solution = self.backtrack(board, {})
 
+        self.log_solution(board)
+        
         # Stop the timer
         end = time.time()
-        print("It took", end - start, "seconds!")
+        print(f"It took {round(end - start, 2)} seconds to solve this sudoku!")
         
         if solution == None:
             print("Could not find a solution to this Kropki Sudoku!")
             sys.exit(1)
         
         self.print_solution(solution, output_file)
+
 
     def read_file(self, input_path):
         try:
@@ -46,12 +56,15 @@ class CSP:
             print(f"Failed to read the file: {e}")
             sys.exit(1)
 
+
     # ----------------- Initialization -----------------
+
 
     def set_variables(self, board):
         # Store unassigned cells into a list
         self.variables = [(i, j) for i in range(self.rows) for j in range(self.cols) if board[i][j] == 0]
     
+
     def set_domain(self, board):
         self.domains = dict()
 
@@ -65,6 +78,7 @@ class CSP:
                 if self.is_consistent(var, value, board):
                     self.domains[var].append(value)
     
+
     def set_constraints(self):
         self.constraints = dict()
 
@@ -116,9 +130,11 @@ class CSP:
                         (iterate_row, iterate_col) not in self.constraints[var]):
                         self.constraints[var][(iterate_row, iterate_col)] = 3
 
+
     # -----------------------------------------------
 
     # ----------------- Consistency -----------------
+
 
     def is_consistent(self, var, value, board):
         # Check if the value satisfies all constraints with its neighbors
@@ -132,6 +148,7 @@ class CSP:
 
         return True
     
+
     def satisfy_constraint(self, value, neighbor_value, constraint):
         # Skip constraint check if neighbor cell is not yet assigned
         if neighbor_value == 0:
@@ -152,8 +169,10 @@ class CSP:
                     return False
         return True
     
+
     # -----------------------------------------------
     
+
     def select_unassigned_variable(self, assignment):
         unassigned = [var for var in self.variables if var not in assignment]
 
@@ -171,8 +190,10 @@ class CSP:
     def order_domain_values(self, var):
         return self.domains[var]
     
+
     # ----------------- Inference -----------------
     
+
     def prepare_inference(self, var):
         # Create a backup of domain values before inference
         var_domains = dict()
@@ -189,6 +210,7 @@ class CSP:
                 var_domains[neighbor].append(neighbor_value)
 
         return var_domains
+
 
     def inference(self, var, value):
         # Use Forward Checking
@@ -218,6 +240,7 @@ class CSP:
         # Forward checking succeeded
         return True
     
+
     def backtrack_inference(self, var, var_domains):
         for neighbor in self.constraints[var]:
             # Skip if neighbor is already assigned
@@ -232,9 +255,11 @@ class CSP:
             # Sort the restored domain to maintain consistent ordering
             self.domains[neighbor].sort()
 
+
     # ------------------------------------------------
     
     # ----------------- Backtracking -----------------
+
 
     def backtrack(self, board, assignment):
         # If assignment is complete, then return assignment
@@ -259,6 +284,7 @@ class CSP:
                 if self.inference(var, value):
                     # Recursively try to complete the assignment
                     solution = self.backtrack(board, assignment)
+
                     if solution is not None:
                         return solution
                 
@@ -273,6 +299,31 @@ class CSP:
         return None
     
     # ------------------------------------------------
+
+
+    def log_solution(self, board):
+        os.system('cls')
+        for i in range(len(board)):
+            if i % 3 == 0:
+                print("--------+-------+--------")
+
+            for j in range(len(board[0])):
+                if j % 3 == 0:
+                    print("| ", end="")
+
+                if j == 8:
+                    if board[i][j] == 0:
+                        print("  |")
+                    else:
+                        print(str(board[i][j]) + " |")
+                else:
+                    if board[i][j] == 0:
+                        print(" " + " ", end="")
+                    else:
+                        print(str(board[i][j]) + " ", end="")
+        print("--------+-------+--------")
+        time.sleep(0.1)
+            
     
     def print_solution(self, solution, output_file):
         with open(output_file, "w") as file:
@@ -281,6 +332,7 @@ class CSP:
                 file.write("\n")
 
         print(f"Solution has been write to \"{output_file}\"")
+
 
 def main():
     try:

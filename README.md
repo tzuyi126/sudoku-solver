@@ -1,2 +1,2 @@
-# Sudoku Solver using Backtracking Algorithm and Inference Method
+# Kropki Sudok Solver using Backtracking Algorithm and Inference Method
 
